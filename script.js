@@ -1,4 +1,3 @@
-// Traducciones Actualizadas
 const translations = {
     es: {
         nav_about: "Sobre mí",
@@ -6,7 +5,7 @@ const translations = {
         nav_projects: "Proyectos",
         nav_contact: "Contactar",
         hero_badge: "Desarrollador Web Junior",
-        hero_role: "Desarrollador Fullstack & Estudiante UTN",
+        hero_role: "Desarrollador Web & Estudiante UTN",
         hero_desc: "Actualmente cursando el 2.º año de <strong>Ingeniería en Sistemas</strong>. Combino la lógica de la ingeniería con la creatividad del desarrollo web.",
         btn_projects: "Ver Proyectos",
         btn_contact: "Hablemos",
@@ -27,7 +26,7 @@ const translations = {
         nav_projects: "Projects",
         nav_contact: "Contact",
         hero_badge: "Junior Web Developer",
-        hero_role: "Fullstack Developer & Engineering Student",
+        hero_role: "Web Developer & Engineering Student",
         hero_desc: "Currently in my 2nd year of <strong>Systems Engineering</strong>. I combine engineering logic with web development creativity.",
         btn_projects: "View Projects",
         btn_contact: "Let's Talk",
@@ -73,7 +72,6 @@ function updateLanguage() {
         const key = element.getAttribute('data-i18n');
         if (translations[currentLang][key]) {
              let text = translations[currentLang][key];
-             // Parse simple markdown bold
              text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
              element.innerHTML = text;
         }
@@ -86,43 +84,27 @@ function copyEmail() {
     navigator.clipboard.writeText(email).then(() => {
         const msg = document.getElementById('copy-message');
         const btn = document.getElementById('btn-email');
-        
         msg.classList.add('show-msg');
-        btn.style.borderColor = "#4ade80"; // Verde
+        btn.style.borderColor = "#4ade80"; 
         btn.style.color = "#4ade80";
-        
         setTimeout(() => {
             msg.classList.remove('show-msg');
             btn.style.borderColor = "var(--accent-color)";
             btn.style.color = "var(--accent-color)";
         }, 2000);
-    }).catch(err => {
-        console.error('Error al copiar: ', err);
     });
 }
 
-// --- Mobile Menu ---
+// --- Mobile Menu & Scroll ---
 const hamburger = document.querySelector('.hamburger');
 const navLinks = document.querySelector('.nav-links');
 
-hamburger.addEventListener('click', () => {
-    navLinks.classList.toggle('active');
-});
+hamburger.addEventListener('click', () => { navLinks.classList.toggle('active'); });
+document.querySelectorAll('.nav-links a').forEach(link => { navLinks.classList.remove('active'); });
 
-document.querySelectorAll('.nav-links a').forEach(link => {
-    link.addEventListener('click', () => {
-        navLinks.classList.remove('active');
-    });
-});
-
-// --- Scroll Animation ---
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('show');
-        }
+        if (entry.isIntersecting) { entry.target.classList.add('show'); }
     });
 }, { threshold: 0.1 });
-
-const hiddenElements = document.querySelectorAll('.hidden');
-hiddenElements.forEach((el) => observer.observe(el));
+document.querySelectorAll('.hidden').forEach((el) => observer.observe(el));
