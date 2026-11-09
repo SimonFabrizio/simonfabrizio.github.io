@@ -169,7 +169,118 @@ function initHeader() {
   header.addEventListener('focusin', () => (header.dataset.hidden = 'false'));
 }
 
+/* ---------- Menú de comandos (Ctrl/Cmd + K) ---------- */
+type Command = { label: string; group: string; keywords: string; run: () => void };
+
+function initPalette() {
+  const dialog = document.getElementById('palette') as HTMLDialogElement | null;
+  const input = document.getElementById('palette-input') as HTMLInputElement | null;
+  const list = document.getElementById('palette-list');
+  const empty = document.getElementById('palette-empty');
+  const opener = document.getElementById('palette-open');
+  if (!dialog || !input || !list || !empty) return;
+
+  const isMac = /Mac|iPhone|iPad/.test(navigator.platform);
+  document.querySelectorAll('[data-kbd]').forEach((k) => (k.textContent = isMac ? '⌘K' : 'Ctrl K'));
+
+  const go = (id: string) => () => document.getElementById(id)?.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth' });
+  const open = (url: string) => () => window.open(url, '_blank', 'noopener');
+
+  const commands: Command[] = [
+    { group: 'Ir a', label: 'Proyectos', keywords: 'galeria plantas vivero trabajos', run: go('proyectos') },
+    { group: 'Ir a', label: 'Cómo trabajo', keywords: 'proceso metodo', run: go('proceso-titulo') },
+    { group: 'Ir a', label: 'Sobre mí', keywords: 'habilidades educacion utn', run: go('sobre-mi') },
+    { group: 'Ir a', label: 'Contacto', keywords: 'email mail escribir', run: go('contacto') },
+    { group: 'Acciones', label: 'Copiar email', keywords: 'mail correo contacto', run: () => document.getElementById('copy-email')?.click() },
+    { group: 'Acciones', label: 'Cambiar tema claro u oscuro', keywords: 'modo oscuro dark light', run: () => document.getElementById('theme-toggle')?.click() },
+    { group: 'Enlaces', label: 'Abrir La Galería de las Plantas', keywords: 'vivero sitio demo', run: open('https://lagaleriadelasplantas.netlify.app/') },
+    { group: 'Enlaces', label: 'Abrir GitHub', keywords: 'codigo repos', run: open('https://github.com/SimonFabrizio') },
+    { group: 'Enlaces', label: 'Abrir LinkedIn', keywords: 'perfil trabajo', run: open('https://www.linkedin.com/in/simon-fabrizio') },
+  ];
+
+  const normalize = (t: string) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  let results: Command[] = commands;
+  let active = 0;
+
+  const render = () => {
+    list.innerHTML = '';
+    let lastGroup = '';
+    results.forEach((c, i) => {
+      if (c.group !== lastGroup) {
+        const h = document.createElement('li');
+        h.setAttribute('role', 'presentation');
+        h.className = 'px-3 pb-1 pt-3 text-xs text-[var(--muted)]';
+        h.textContent = c.group;
+        list.appendChild(h);
+        lastGroup = c.group;
+      }
+      const li = document.createElement('li');
+      li.id = `cmd-${i}`;
+      li.setAttribute('role', 'option');
+      li.setAttribute('aria-selected', String(i === active));
+      li.className =
+        'cursor-pointer rounded-lg px-3 py-2.5 aria-selected:bg-[var(--fg)] aria-selected:text-[var(--bg)]';
+      li.textContent = c.label;
+      li.addEventListener('mousemove', () => {
+        if (active !== i) {
+          active = i;
+          render();
+        }
+      });
+      li.addEventListener('click', () => execute(i));
+      list.appendChild(li);
+    });
+    empty.classList.toggle('hidden', results.length > 0);
+    input.setAttribute('aria-activedescendant', results.length ? `cmd-${active}` : '');
+    document.getElementById(`cmd-${active}`)?.scrollIntoView({ block: 'nearest' });
+  };
+
+  const show = () => {
+    input.value = '';
+    results = commands;
+    active = 0;
+    render();
+    dialog.showModal();
+    input.focus();
+  };
+  const execute = (i: number) => {
+    const c = results[i];
+    if (!c) return;
+    dialog.close();
+    c.run();
+  };
+
+  input.addEventListener('input', () => {
+    const q = normalize(input.value.trim());
+    results = commands.filter((c) => normalize(`${c.label} ${c.keywords} ${c.group}`).includes(q));
+    active = 0;
+    render();
+  });
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!results.length) return;
+      active = (active + (e.key === 'ArrowDown' ? 1 : -1) + results.length) % results.length;
+      render();
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      execute(active);
+    }
+  });
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) dialog.close(); // clic afuera cierra
+  });
+  opener?.addEventListener('click', show);
+  window.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      dialog.open ? dialog.close() : show();
+    }
+  });
+}
+
 export function initSite() {
+  initPalette();
   initTheme();
   initHeader();
   initCopyEmail();

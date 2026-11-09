@@ -15,6 +15,8 @@ Estudiante de **Ingeniería en Sistemas de Información (UTN)** y desarrollador 
 
 ## Detalles de UX
 
+- Menú de comandos con `Ctrl K` / `⌘K`: ir a cualquier sección, copiar el email, cambiar el tema o abrir GitHub y LinkedIn.
+- El proyecto principal se cuenta como caso de estudio: desafío, lo que hice, resultado y lo que aprendí.
 - Modo claro y oscuro: sigue al sistema y recuerda la elección.
 - El menú se esconde al bajar y vuelve al subir.
 - Vista previa de cada proyecto que sigue al cursor (solo en escritorio).
