@@ -1,0 +1,49 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+const ogImage = new URL('/img/galeria-plantas.webp', Astro.site).href;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={Astro.site} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={Astro.site} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script is:inline>
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        var d = document.documentElement;
+        d.dataset.theme = t;
+        d.classList.add('js');
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'dark' ? '#000000' : '#ffffff');
+      })();
+    </script>
+  </head>
+  <body class="min-h-dvh overflow-x-clip">
+    <a
+      href="#contenido"
+      class="fixed left-4 top-4 z-[100] -translate-y-24 bg-[var(--fg)] px-4 py-2 text-[var(--bg)] focus:translate-y-0"
+      >Saltar al contenido</a
+    >
+    <slot />
+  </body>
+</html>

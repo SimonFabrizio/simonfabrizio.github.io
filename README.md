@@ -1,37 +1,51 @@
-# Portfolio Personal - Simón Fabrizio 🚀
+# Portafolio de Simón Fabrizio
 
-¡Hola! 👋 Soy Simón, estudiante de **Ingeniería en Sistemas (UTN)** y Desarrollador Web de Argentina.
+Estudiante de **Ingeniería en Sistemas de Información (UTN)** y desarrollador web de Argentina.
 
-Este repositorio contiene el código fuente de mi portfolio personal. Lo diseñé y programé desde cero con el objetivo de tener un espacio propio donde mostrar mis proyectos y mi perfil profesional sin depender de plantillas genéricas.
+👉 **Online:** https://simonfabrizio.github.io/
 
-👉 **Podés ver la web online acá:** https://simonfabrizio.github.io/
+## Tecnologías
 
-## 🛠 Tecnologías
+- **[Astro](https://astro.build/):** genera un sitio estático, rápido y sin JavaScript de más.
+- **[Tailwind CSS](https://tailwindcss.com/):** estilos con un sistema de diseño en blanco y negro (`src/styles/global.css`).
+- **[GSAP](https://gsap.com/)** con ScrollTrigger y SplitText: la entrada letra por letra del nombre y la foto del vivero que pasa de blanco y negro a color al hacer scroll.
+- **[Lenis](https://lenis.darkroom.engineering/):** scroll suave.
+- **View Transitions API:** el cambio a modo oscuro se expande en círculo desde el botón.
+- Tipografías Bricolage Grotesque y Geist, servidas desde el propio sitio.
 
-La idea de este proyecto fue mantenerlo **ligero y rápido**, usando estándares web modernos sin frameworks pesados:
+## Detalles de UX
 
-* **HTML5:** Estructura semántica y accesible (navegación con teclado, textos alternativos).
-* **CSS3:** Variables CSS, Flexbox, Grid y animaciones (`keyframes`).
-* **JavaScript (Vanilla):** Modo oscuro, menú del celular y animaciones al hacer scroll. Nada de librerías externas.
+- Modo claro y oscuro: sigue al sistema y recuerda la elección.
+- El menú se esconde al bajar y vuelve al subir.
+- Vista previa de cada proyecto que sigue al cursor (solo en escritorio).
+- Tocar el email lo copia; si el navegador no deja, abre el correo.
+- Respeta "reducir movimiento": sin animaciones, todo queda visible.
+- Enlace "Saltar al contenido" y foco visible para navegar con teclado.
 
-## ✨ Lo que aprendí / Destacado
+## Proyecto destacado
 
-* **Diseño "Glassmorphism":** Efecto de vidrio esmerilado en las tarjetas usando `backdrop-filter`.
-* **Fondo Animado:** Orbes de luz creados puramente con CSS (sin videos ni GIFs pesados).
-* **Dark Mode:** Detecta la preferencia del sistema, botón manual y la elección queda guardada en `localStorage`.
-* **Accesibilidad:** Respeta "reducir movimiento" del sistema y el contenido se ve aunque JavaScript no cargue.
+**La Galería de las Plantas:** sitio de un vivero real con stock en vivo, panel de administración y Supabase. https://lagaleriadelasplantas.netlify.app/
 
-## 🌿 Proyecto destacado
+## Trabajar en el proyecto
 
-**La Galería de las Plantas**: sitio de un vivero real con catálogo y stock en vivo, panel de administración y base de datos en Supabase. Online en https://lagaleriadelasplantas.netlify.app/
+```bash
+npm install
+npm run dev      # http://localhost:4321
+npm run build    # genera dist/
+```
 
-## 📂 Estructura del Proyecto
+## Estructura
 
 ```text
-/
-├── index.html   # Estructura y contenido
-├── style.css    # Estilos, temas y animaciones
-├── script.js    # Modo oscuro, menú y animaciones
-├── img/         # Capturas de los proyectos (WebP)
-└── README.md    # Este archivo
+src/
+├── layouts/Base.astro   # <head>, SEO y tema inicial
+├── pages/index.astro    # contenido de la página
+├── scripts/site.ts      # animaciones, tema, menú y copiar email
+└── styles/global.css    # paleta, tipografías y Tailwind
+public/img/              # capturas de los proyectos (WebP)
 ```
+
+## Publicación
+
+Cada push a `main` compila y publica el sitio con GitHub Actions (`.github/workflows/deploy.yml`).
+En **Settings > Pages**, la opción *Source* tiene que estar en **GitHub Actions**.
