@@ -4,199 +4,255 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simón Fabrizio | Desarrollador Web</title>
+    <meta name="description" content="Portafolio de Simón Fabrizio, estudiante de Ingeniería en Sistemas de Información (UTN) y desarrollador web en Argentina.">
+    <meta property="og:title" content="Simón Fabrizio | Desarrollador Web">
+    <meta property="og:description" content="Estudiante de Ingeniería en Sistemas de Información (UTN). Proyectos web reales, de la idea a producción.">
+    <meta property="og:image" content="https://simonfabrizio.github.io/img/galeria-plantas.webp">
+    <meta property="og:url" content="https://simonfabrizio.github.io/">
+    <meta name="theme-color" content="#f0f4f8" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0a192f" media="(prefers-color-scheme: dark)">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text x='50' y='68' font-size='56' font-family='Arial' font-weight='700' text-anchor='middle' fill='white'>S</text></svg>">
+    <!-- Aplica el tema antes de pintar para que no parpadee -->
+    <script>
+        (function () {
+            var t = null;
+            try { t = localStorage.getItem('tema'); } catch (e) {}
+            if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'oscuro' : 'claro';
+            document.documentElement.dataset.tema = t;
+            document.documentElement.classList.add('js');
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 </head>
 <body>
+    <a class="skip-link" href="#main">Saltar al contenido</a>
 
-    <div class="background-container">
+    <div class="background-container" aria-hidden="true">
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
         <div class="orb orb-3"></div>
     </div>
 
-    <nav class="navbar">
+    <nav class="navbar" aria-label="Principal">
         <div class="container nav-content">
-            <a href="#" class="logo">Simón.dev</a>
-            
-            <ul class="nav-links">
+            <a href="#" class="logo">Simón<span>.dev</span></a>
+
+            <ul class="nav-links" id="nav-links">
                 <li><a href="#about">Sobre mí</a></li>
-                <li><a href="#skills">Habilidades</a></li>
                 <li><a href="#projects">Proyectos</a></li>
+                <li><a href="#skills">Habilidades</a></li>
                 <li><a href="#contact" class="btn-primary-nav">Contactar</a></li>
             </ul>
 
             <div class="controls">
-                <div class="hamburger">
+                <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Cambiar a modo oscuro">
+                    <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                </button>
+                <button class="hamburger" id="hamburger" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="nav-links">
                     <span></span><span></span><span></span>
-                </div>
+                </button>
             </div>
         </div>
     </nav>
 
-    <header class="hero">
-        <div class="container hero-content">
-            <span class="badge">Desarrollador Web Junior</span>
-            <h1 class="fade-in-up">Simón Fabrizio</h1>
-            <h2 class="fade-in-up delay-1">Desarrollador Web & Estudiante UTN</h2>
-            <p class="fade-in-up delay-2">
-                Actualmente cursando el 2.º año de <strong>Ingeniería en Sistemas</strong>. Combino la lógica de la ingeniería con la creatividad del desarrollo web para crear soluciones eficientes.
-            </p>
-            <div class="cta-group fade-in-up delay-3">
-                <a href="#projects" class="btn-primary">Ver Proyectos</a>
-                <a href="#contact" class="btn-secondary">Hablemos</a>
+    <main id="main">
+        <header class="hero">
+            <div class="container hero-content">
+                <span class="badge fade-in-up">Desarrollador Web · Estudiante UTN</span>
+                <h1 class="fade-in-up delay-1">Simón Fabrizio</h1>
+                <p class="hero-sub fade-in-up delay-2">
+                    Estudio <strong>Ingeniería en Sistemas de Información</strong> y construyo sitios web para negocios reales:
+                    desde el diseño hasta la base de datos y la puesta en línea.
+                </p>
+                <div class="cta-group fade-in-up delay-3">
+                    <a href="#projects" class="btn-primary">Ver proyectos</a>
+                    <a href="#contact" class="btn-secondary">Hablemos</a>
+                </div>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <section id="about" class="section">
-        <div class="container">
-            <h3 class="section-title">Sobre mí</h3>
-            <div class="about-grid">
-                <div class="about-text hidden">
-                    <p>
-                        Soy un apasionado por la tecnología de 20 años. Actualmente curso el <strong>2.º año de Ingeniería en Sistemas en la UTN</strong>, lo que me brinda una base sólida en algoritmos y lógica.
-                    </p>
-                    <p>
-                        Mi enfoque es <strong>resolver problemas reales</strong>. Desde la gestión eficiente en un trabajo diario hasta el desarrollo de software complejo, busco siempre la mejora continua.
-                    </p>
-                    <div class="experience-box">
-                        <h4>Educación</h4>
+        <section id="about" class="section">
+            <div class="container">
+                <h2 class="section-title"><span class="num">01.</span> Sobre mí</h2>
+                <div class="about-grid">
+                    <div class="about-text reveal">
+                        <p>
+                            Soy estudiante de <strong>Ingeniería en Sistemas de Información en la UTN</strong>, lo que me da una base sólida en algoritmos, estructuras de datos y lógica.
+                        </p>
+                        <p>
+                            Mi enfoque es <strong>resolver problemas reales</strong>. Mi proyecto principal es el sitio de un vivero que hoy está online: el dueño actualiza su stock, sus fotos y sus horarios desde un panel propio, sin tocar código.
+                        </p>
+                        <p>
+                            Me gusta entender todo el recorrido: qué necesita la persona que usa el sitio, cómo se guardan los datos y cómo se publica de forma segura y rápida.
+                        </p>
+                    </div>
+                    <div class="experience-box reveal delay-1">
+                        <h3>Educación</h3>
                         <ul>
-                            <li><strong>UTN</strong> - Ingeniería en Sistemas (2.º Año en curso)</li>
-                            <li><strong>Desarrollo Web</strong> - Cursos complementarios & Autodidacta</li>
+                            <li><strong>UTN</strong> · Ingeniería en Sistemas de Información (en curso)</li>
+                            <li><strong>Desarrollo Web</strong> · Cursos complementarios y autodidacta</li>
                         </ul>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section id="skills" class="section">
-        <div class="container">
-            <h3 class="section-title">Habilidades Técnicas</h3>
-            
-            <div class="skills-grid hidden">
-                <div class="skill-category card-glass">
-                    <h4>Desarrollo Web</h4>
-                    <div class="skill-tag-container">
-                        <span class="skill-tag">HTML5 Semántico</span>
-                        <span class="skill-tag">CSS3</span>
-                        <span class="skill-tag">Flexbox & Grid</span>
-                        <span class="skill-tag">JavaScript (ES6+)</span>
-                        <span class="skill-tag">DOM Manipulation</span>
-                        <span class="skill-tag">Responsive Design</span>
-                        <span class="skill-tag">Consumo de APIs</span>
-                    </div>
-                </div>
+        <section id="projects" class="section">
+            <div class="container">
+                <h2 class="section-title"><span class="num">02.</span> Proyectos destacados</h2>
 
-                <div class="skill-category card-glass">
-                    <h4>Ingeniería & Herramientas</h4>
-                    <div class="skill-tag-container">
-                        <span class="skill-tag">Lenguaje C</span>
-                        <span class="skill-tag">Lógica & Algoritmos</span>
-                        <span class="skill-tag">Estructuras de Datos</span>
-                        <span class="skill-tag">Manejo de Memoria</span>
-                        <span class="skill-tag">Git & GitHub</span>
-                        <span class="skill-tag">VS Code</span>
-                        <span class="skill-tag">Google Sheets API</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="projects" class="section">
-        <div class="container">
-            <h3 class="section-title">Proyectos Destacados</h3>
-            
-            <div class="projects-grid">
-                
-                <article class="project-card hidden">
-                    <div class="project-image">
-                        <img src="img/captura-vivero.png" alt="Sistema de Gestión Vivero">
-                    </div>
-                    
-                    <div class="project-content">
-                        <h4 class="project-title">Sistema de Gestión de Stock & POS</h4>
+                <article class="featured reveal">
+                    <a class="featured-image" href="https://lagaleriadelasplantas.netlify.app/" target="_blank" rel="noopener">
+                        <img src="img/galeria-plantas.webp" width="1280" height="800" alt="Página de inicio de La Galería de las Plantas, con la foto de la entrada del vivero" loading="lazy">
+                    </a>
+                    <div class="featured-content">
+                        <span class="eyebrow">Proyecto principal · Online</span>
+                        <h3 class="project-title">La Galería de las Plantas</h3>
                         <p class="project-desc">
-                            Solución Full Stack para un comercio real. Sincroniza inventario en tiempo real entre una 
-                            <strong>App de Venta (Móvil)</strong> y un <strong>Catálogo Web (Cliente)</strong> usando 
-                            Google Sheets como base de datos.
+                            Sitio web completo para un vivero real de Berisso. Los clientes ven el catálogo con el
+                            <strong>stock actualizado</strong>, buscan y filtran plantas, saben si el vivero está
+                            <strong>abierto ahora</strong> y consultan por WhatsApp.
                         </p>
-                        
+                        <ul class="feature-list">
+                            <li><strong>Panel de administración</strong> con login: el dueño carga plantas, fotos, stock, textos y horarios sin tocar código.</li>
+                            <li><strong>Base de datos en Supabase</strong> (PostgreSQL) con permisos por fila para que solo el dueño pueda modificar.</li>
+                            <li><strong>Rápido y seguro:</strong> imágenes WebP en dos tamaños, cabeceras de seguridad (CSP) y SEO básico.</li>
+                        </ul>
                         <div class="project-tech-tags">
-                            <span>JavaScript</span>
-                            <span>Apps Script</span>
-                            <span>Sheets API</span>
-                            <span>Git</span>
+                            <span>HTML</span><span>CSS</span><span>JavaScript</span><span>Supabase</span><span>PostgreSQL</span><span>Netlify</span>
                         </div>
-
                         <div class="project-actions">
-                            <a href="https://github.com/SimonFabrizio/vivero-web" target="_blank" class="btn-card secondary">
-                                Ver Código
-                            </a>
-                            <a href="https://simonfabrizio.github.io/vivero-web/" target="_blank" class="btn-card primary">
-                                Demo en Vivo
+                            <a href="https://lagaleriadelasplantas.netlify.app/" target="_blank" rel="noopener" class="btn-card primary">
+                                Ver sitio en vivo
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
                             </a>
                         </div>
                     </div>
                 </article>
 
-                <article class="project-card hidden delay-1">
-                    <div class="project-header">
-                        <div class="folder-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2-2z"></path></svg>
+                <div class="projects-grid">
+                    <article class="project-card reveal">
+                        <div class="project-image">
+                            <img src="img/stock-pos.webp" width="1200" height="563" alt="Planilla de control de stock del sistema de ventas" loading="lazy">
                         </div>
-                        <div class="project-links">
-                            <a href="https://github.com/SimonFabrizio/Auto-Mecanica" target="_blank" aria-label="GitHub Repo"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a>
+                        <div class="project-content">
+                            <h3 class="project-title">Sistema de stock y punto de venta</h3>
+                            <p class="project-desc">
+                                Primera versión del vivero. Sincroniza el inventario entre una <strong>app de venta para el celular</strong>
+                                (con PIN y carrito) y un <strong>catálogo web</strong>, usando Google Sheets como base de datos.
+                            </p>
+                            <div class="project-tech-tags">
+                                <span>JavaScript</span><span>Apps Script</span><span>Google Sheets</span>
+                            </div>
+                            <div class="project-actions">
+                                <a href="https://github.com/SimonFabrizio/vivero-web" target="_blank" rel="noopener" class="btn-card secondary">Ver código</a>
+                                <a href="https://simonfabrizio.github.io/vivero-web/" target="_blank" rel="noopener" class="btn-card primary">Demo</a>
+                            </div>
                         </div>
-                    </div>
-                    <h4 class="project-title">Gestión de Taller Mecánico</h4>
-                    <p class="project-desc">
-                        Sistema en C para turnos y facturación. Implementa estructuras dinámicas, punteros y algoritmos de ordenamiento para optimizar procesos.
-                    </p>
-                    <ul class="tech-list">
-                        <li>Lenguaje C</li>
-                        <li>Listas/Colas</li>
-                        <li>Algoritmos</li>
-                    </ul>
-                </article>
+                    </article>
 
-            </div>
-        </div>
-    </section>
-
-    <section id="contact" class="section text-center">
-        <div class="container small-container">
-            <h3 class="section-title">¿Listo para trabajar juntos?</h3>
-            <p class="contact-text hidden">
-                Busco mi primera oportunidad profesional. Si buscas alguien proactivo y con buena base lógica, contáctame.
-            </p>
-            
-            <div class="contact-buttons hidden">
-                <button id="btn-email" class="btn-primary big-btn" onclick="copyEmail()">
-                    <span id="email-text">simon.fabrizio01@gmail.com</span>
-                    <span class="copy-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                    </span>
-                </button>
-                <p id="copy-message" class="hidden-msg">Email copiado</p>
-
-                <div class="social-links">
-                    <a href="https://www.linkedin.com/in/simon-fabrizio" target="_blank">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
-                    </a>
-                    <a href="https://github.com/SimonFabrizio" target="_blank">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-                    </a>
+                    <article class="project-card reveal delay-1">
+                        <div class="project-content">
+                            <div class="project-header">
+                                <div class="folder-icon" aria-hidden="true">
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                                </div>
+                            </div>
+                            <h3 class="project-title">Gestión de taller mecánico</h3>
+                            <p class="project-desc">
+                                Sistema en C para turnos y facturación de un taller. Usa estructuras dinámicas, punteros, listas y colas,
+                                y algoritmos de ordenamiento.
+                            </p>
+                            <div class="project-tech-tags">
+                                <span>Lenguaje C</span><span>Listas y colas</span><span>Algoritmos</span>
+                            </div>
+                            <div class="project-actions">
+                                <a href="https://github.com/SimonFabrizio/Auto-Mecanica" target="_blank" rel="noopener" class="btn-card secondary">Ver código</a>
+                            </div>
+                        </div>
+                    </article>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+
+        <section id="skills" class="section">
+            <div class="container">
+                <h2 class="section-title"><span class="num">03.</span> Habilidades</h2>
+                <div class="skills-grid">
+                    <div class="skill-category reveal">
+                        <h3>Desarrollo web</h3>
+                        <div class="skill-tag-container">
+                            <span class="skill-tag">HTML semántico</span>
+                            <span class="skill-tag">CSS3</span>
+                            <span class="skill-tag">Flexbox y Grid</span>
+                            <span class="skill-tag">JavaScript (ES6+)</span>
+                            <span class="skill-tag">Responsive design</span>
+                            <span class="skill-tag">Accesibilidad</span>
+                            <span class="skill-tag">SEO básico</span>
+                        </div>
+                    </div>
+                    <div class="skill-category reveal delay-1">
+                        <h3>Datos y backend</h3>
+                        <div class="skill-tag-container">
+                            <span class="skill-tag">Supabase</span>
+                            <span class="skill-tag">PostgreSQL / SQL</span>
+                            <span class="skill-tag">Autenticación</span>
+                            <span class="skill-tag">Google Apps Script</span>
+                            <span class="skill-tag">Google Sheets API</span>
+                        </div>
+                    </div>
+                    <div class="skill-category reveal delay-2">
+                        <h3>Ingeniería y herramientas</h3>
+                        <div class="skill-tag-container">
+                            <span class="skill-tag">Lenguaje C</span>
+                            <span class="skill-tag">Algoritmos</span>
+                            <span class="skill-tag">Estructuras de datos</span>
+                            <span class="skill-tag">Git y GitHub</span>
+                            <span class="skill-tag">Netlify</span>
+                            <span class="skill-tag">GitHub Pages</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="section text-center">
+            <div class="container small-container">
+                <h2 class="section-title center"><span class="num">04.</span> ¿Trabajamos juntos?</h2>
+                <p class="contact-text reveal">
+                    Busco mi primera oportunidad profesional y también hago sitios web para negocios.
+                    Si buscás alguien proactivo y con buena base lógica, escribime.
+                </p>
+
+                <div class="contact-buttons reveal">
+                    <button id="btn-email" class="btn-primary big-btn" type="button">
+                        <span>simon.fabrizio01@gmail.com</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </button>
+                    <p id="copy-message" class="hidden-msg" role="status" aria-live="polite"></p>
+
+                    <div class="social-links">
+                        <a href="https://www.linkedin.com/in/simon-fabrizio" target="_blank" rel="noopener" aria-label="LinkedIn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                        </a>
+                        <a href="https://github.com/SimonFabrizio" target="_blank" rel="noopener" aria-label="GitHub">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                        </a>
+                        <a href="mailto:simon.fabrizio01@gmail.com" aria-label="Enviar email">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <footer>
-        <p>Designed & Built by Simón Fabrizio © 2026</p>
+        <p>Diseñado y programado por Simón Fabrizio · <span id="year">2026</span></p>
     </footer>
 
     <script src="script.js"></script>
