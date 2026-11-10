@@ -1,0 +1,357 @@
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { SplitText } from 'gsap/SplitText';
+import Lenis from 'lenis';
+
+gsap.registerPlugin(ScrollTrigger, SplitText);
+
+const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- Tema claro / oscuro ---------- */
+function initTheme() {
+  const btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  const root = document.documentElement;
+  const meta = document.querySelector('meta[name="theme-color"]');
+
+  const label = () =>
+    btn.setAttribute('aria-label', root.dataset.theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+  label();
+
+  const apply = (t: string) => {
+    root.dataset.theme = t;
+    meta?.setAttribute('content', t === 'dark' ? '#000000' : '#ffffff');
+    label();
+  };
+
+  btn.addEventListener('click', (e) => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    try {
+      localStorage.setItem('theme', next);
+    } catch {}
+
+    // Círculo que crece desde el botón (si el navegador lo soporta)
+    if (!document.startViewTransition || reduceMotion()) {
+      apply(next);
+      return;
+    }
+    const x = e.clientX || window.innerWidth - 40;
+    const y = e.clientY || 40;
+    const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    const vt = document.startViewTransition(() => apply(next));
+    vt.ready.then(() => {
+      document.documentElement.animate(
+        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${r}px at ${x}px ${y}px)`] },
+        { duration: 650, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', pseudoElement: '::view-transition-new(root)' },
+      );
+    });
+  });
+
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    let saved = null;
+    try {
+      saved = localStorage.getItem('theme');
+    } catch {}
+    if (!saved) apply(e.matches ? 'dark' : 'light');
+  });
+}
+
+/* ---------- Copiar email ---------- */
+function initCopyEmail() {
+  const btn = document.getElementById('copy-email');
+  const status = document.getElementById('copy-status');
+  if (!btn || !status) return;
+  const email = btn.dataset.email ?? '';
+  const initial = status.textContent;
+  let timer: number | undefined;
+
+  btn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(email);
+      status.textContent = 'Email copiado. Pegalo en tu correo.';
+    } catch {
+      window.location.href = `mailto:${email}`;
+      return;
+    }
+    window.clearTimeout(timer);
+    timer = window.setTimeout(() => (status.textContent = initial), 3000);
+  });
+}
+
+/* ---------- Scroll suave ---------- */
+function initLenis() {
+  const lenis = new Lenis({ duration: 1.1, anchors: { offset: 0 } });
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add((t) => lenis.raf(t * 1000));
+  gsap.ticker.lagSmoothing(0);
+}
+
+/* ---------- Entrada del nombre (el único momento orquestado) ---------- */
+function initHero() {
+  const title = document.querySelector<HTMLElement>('[data-split]');
+  const meta = document.querySelector('[data-hero-meta]');
+  if (!title) return;
+
+  document.fonts.ready.then(() => {
+    const split = SplitText.create(title, { type: 'chars', mask: 'chars' });
+    gsap.set(title, { visibility: 'visible' });
+    const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
+    tl.from(split.chars, { yPercent: 110, duration: 1.3, stagger: 0.035 });
+    if (meta) tl.from(meta, { opacity: 0, y: 16, duration: 1 }, '-=0.8');
+  });
+}
+
+/* ---------- La foto del vivero pasa de blanco y negro a color al hacer scroll ---------- */
+function initReveal() {
+  const wrap = document.querySelector('[data-reveal-wrap]');
+  const img = document.querySelector<HTMLImageElement>('[data-reveal-img]');
+  if (!wrap || !img) return;
+
+  img.classList.remove('grayscale', 'transition-[filter]');
+  gsap.fromTo(
+    img,
+    { filter: 'grayscale(1)', scale: 1.15 },
+    {
+      filter: 'grayscale(0)',
+      scale: 1,
+      ease: 'none',
+      scrollTrigger: { trigger: wrap, start: 'top 85%', end: 'center 45%', scrub: true },
+    },
+  );
+  gsap.fromTo(
+    wrap,
+    { clipPath: 'inset(8% 6% 8% 6%)' },
+    {
+      clipPath: 'inset(0% 0% 0% 0%)',
+      ease: 'none',
+      scrollTrigger: { trigger: wrap, start: 'top 90%', end: 'top 30%', scrub: true },
+    },
+  );
+}
+
+/* ---------- Vista previa que sigue al cursor ---------- */
+function initPreview() {
+  const box = document.getElementById('preview');
+  const img = box?.querySelector('img');
+  if (!box || !img || !matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+  const xTo = gsap.quickTo(box, 'x', { duration: 0.5, ease: 'power3' });
+  const yTo = gsap.quickTo(box, 'y', { duration: 0.5, ease: 'power3' });
+  // Se balancea en 3D según la velocidad del mouse
+  gsap.set(box, { transformPerspective: 800 });
+  const rotY = gsap.quickTo(box, 'rotationY', { duration: 0.8, ease: 'power3' });
+  const rotX = gsap.quickTo(box, 'rotationX', { duration: 0.8, ease: 'power3' });
+  let lastX = 0;
+  let lastY = 0;
+  let settle: number | undefined;
+
+  document.querySelectorAll<HTMLElement>('[data-preview]').forEach((row) => {
+    row.addEventListener('mouseenter', () => {
+      img.src = row.dataset.preview!;
+      gsap.to(box, { opacity: 1, scale: 1, duration: 0.35, ease: 'power3.out' });
+    });
+    row.addEventListener('mouseleave', () => gsap.to(box, { opacity: 0, scale: 0.9, duration: 0.25 }));
+    row.addEventListener('mousemove', (e) => {
+      xTo(e.clientX + 24);
+      yTo(e.clientY - 90);
+      const clamp = gsap.utils.clamp(-25, 25);
+      rotY(clamp((e.clientX - lastX) * 1.5));
+      rotX(clamp(-(e.clientY - lastY) * 1.5));
+      lastX = e.clientX;
+      lastY = e.clientY;
+      window.clearTimeout(settle);
+      settle = window.setTimeout(() => {
+        rotY(0);
+        rotX(0);
+      }, 80);
+    });
+  });
+}
+
+/* ---------- Tarjetas que se inclinan en 3D con el mouse ---------- */
+function initTilt() {
+  if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+  document.querySelectorAll<HTMLElement>('[data-tilt]').forEach((card) => {
+    const max = Number(card.dataset.tilt) || 8;
+    const glare = card.querySelector<HTMLElement>('[data-tilt-glare]');
+    gsap.set(card, { transformPerspective: 1000, transformStyle: 'preserve-3d' });
+    const rx = gsap.quickTo(card, 'rotationX', { duration: 0.6, ease: 'power3' });
+    const ry = gsap.quickTo(card, 'rotationY', { duration: 0.6, ease: 'power3' });
+
+    card.addEventListener('pointermove', (e) => {
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width; // 0 a 1
+      const py = (e.clientY - r.top) / r.height;
+      ry((px - 0.5) * 2 * max);
+      rx((0.5 - py) * 2 * max);
+      if (glare) {
+        glare.style.setProperty('--gx', `${px * 100}%`);
+        glare.style.setProperty('--gy', `${py * 100}%`);
+      }
+    });
+    card.addEventListener('pointerenter', () => glare && gsap.to(glare, { opacity: 1, duration: 0.4 }));
+    card.addEventListener('pointerleave', () => {
+      rx(0);
+      ry(0);
+      if (glare) gsap.to(glare, { opacity: 0, duration: 0.5 });
+    });
+  });
+}
+
+/* ---------- Figura 3D de la portada (Three.js se carga aparte, sin frenar la página) ---------- */
+function initHero3D() {
+  const canvas = document.getElementById('hero-3d') as HTMLCanvasElement | null;
+  if (!canvas) return;
+  const still = reduceMotion();
+  const load = () =>
+    import('./hero3d').then(({ mountHero3D }) => {
+      mountHero3D(canvas, still);
+      if (still) canvas.style.opacity = '1';
+      else gsap.to(canvas, { opacity: 1, scale: 1, duration: 1.6, ease: 'expo.out', delay: 0.3 });
+    });
+  if ('requestIdleCallback' in window) requestIdleCallback(load, { timeout: 1500 });
+  else setTimeout(load, 300);
+}
+
+/* ---------- El menú se esconde al bajar y vuelve al subir ---------- */
+function initHeader() {
+  const header = document.getElementById('site-header');
+  if (!header) return;
+  let lastY = window.scrollY;
+  window.addEventListener(
+    'scroll',
+    () => {
+      const y = window.scrollY;
+      header.dataset.hidden = String(y > 120 && y > lastY);
+      lastY = y;
+    },
+    { passive: true },
+  );
+  // Si alguien navega con teclado, el menú vuelve a aparecer
+  header.addEventListener('focusin', () => (header.dataset.hidden = 'false'));
+}
+
+/* ---------- Menú de comandos (Ctrl/Cmd + K) ---------- */
+type Command = { label: string; group: string; keywords: string; run: () => void };
+
+function initPalette() {
+  const dialog = document.getElementById('palette') as HTMLDialogElement | null;
+  const input = document.getElementById('palette-input') as HTMLInputElement | null;
+  const list = document.getElementById('palette-list');
+  const empty = document.getElementById('palette-empty');
+  const opener = document.getElementById('palette-open');
+  if (!dialog || !input || !list || !empty) return;
+
+  const isMac = /Mac|iPhone|iPad/.test(navigator.platform);
+  document.querySelectorAll('[data-kbd]').forEach((k) => (k.textContent = isMac ? '⌘K' : 'Ctrl K'));
+
+  const go = (id: string) => () => document.getElementById(id)?.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth' });
+  const open = (url: string) => () => window.open(url, '_blank', 'noopener');
+
+  const commands: Command[] = [
+    { group: 'Ir a', label: 'Proyectos', keywords: 'galeria plantas vivero trabajos', run: go('proyectos') },
+    { group: 'Ir a', label: 'Cómo trabajo', keywords: 'proceso metodo', run: go('proceso-titulo') },
+    { group: 'Ir a', label: 'Sobre mí', keywords: 'habilidades educacion utn', run: go('sobre-mi') },
+    { group: 'Ir a', label: 'Contacto', keywords: 'email mail escribir', run: go('contacto') },
+    { group: 'Acciones', label: 'Copiar email', keywords: 'mail correo contacto', run: () => document.getElementById('copy-email')?.click() },
+    { group: 'Acciones', label: 'Cambiar tema claro u oscuro', keywords: 'modo oscuro dark light', run: () => document.getElementById('theme-toggle')?.click() },
+    { group: 'Enlaces', label: 'Abrir La Galería de las Plantas', keywords: 'vivero sitio demo', run: open('https://lagaleriadelasplantas.netlify.app/') },
+    { group: 'Enlaces', label: 'Abrir GitHub', keywords: 'codigo repos', run: open('https://github.com/SimonFabrizio') },
+    { group: 'Enlaces', label: 'Abrir LinkedIn', keywords: 'perfil trabajo', run: open('https://www.linkedin.com/in/simon-fabrizio') },
+  ];
+
+  const normalize = (t: string) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  let results: Command[] = commands;
+  let active = 0;
+
+  const render = () => {
+    list.innerHTML = '';
+    let lastGroup = '';
+    results.forEach((c, i) => {
+      if (c.group !== lastGroup) {
+        const h = document.createElement('li');
+        h.setAttribute('role', 'presentation');
+        h.className = 'px-3 pb-1 pt-3 text-xs text-[var(--muted)]';
+        h.textContent = c.group;
+        list.appendChild(h);
+        lastGroup = c.group;
+      }
+      const li = document.createElement('li');
+      li.id = `cmd-${i}`;
+      li.setAttribute('role', 'option');
+      li.setAttribute('aria-selected', String(i === active));
+      li.className =
+        'cursor-pointer rounded-lg px-3 py-2.5 aria-selected:bg-[var(--fg)] aria-selected:text-[var(--bg)]';
+      li.textContent = c.label;
+      li.addEventListener('mousemove', () => {
+        if (active !== i) {
+          active = i;
+          render();
+        }
+      });
+      li.addEventListener('click', () => execute(i));
+      list.appendChild(li);
+    });
+    empty.classList.toggle('hidden', results.length > 0);
+    input.setAttribute('aria-activedescendant', results.length ? `cmd-${active}` : '');
+    document.getElementById(`cmd-${active}`)?.scrollIntoView({ block: 'nearest' });
+  };
+
+  const show = () => {
+    input.value = '';
+    results = commands;
+    active = 0;
+    render();
+    dialog.showModal();
+    input.focus();
+  };
+  const execute = (i: number) => {
+    const c = results[i];
+    if (!c) return;
+    dialog.close();
+    c.run();
+  };
+
+  input.addEventListener('input', () => {
+    const q = normalize(input.value.trim());
+    results = commands.filter((c) => normalize(`${c.label} ${c.keywords} ${c.group}`).includes(q));
+    active = 0;
+    render();
+  });
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!results.length) return;
+      active = (active + (e.key === 'ArrowDown' ? 1 : -1) + results.length) % results.length;
+      render();
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      execute(active);
+    }
+  });
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) dialog.close(); // clic afuera cierra
+  });
+  opener?.addEventListener('click', show);
+  window.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      dialog.open ? dialog.close() : show();
+    }
+  });
+}
+
+export function initSite() {
+  initPalette();
+  initTheme();
+  initHeader();
+  initCopyEmail();
+  initHero3D(); // con movimiento reducido se dibuja quieta
+  if (reduceMotion()) return; // sin animaciones: todo queda visible y estático
+  initLenis();
+  initHero();
+  initReveal();
+  initPreview();
+  initTilt();
+}

@@ -1,0 +1,118 @@
+@import "tailwindcss";
+@import "@fontsource-variable/bricolage-grotesque/wdth.css";
+@import "@fontsource-variable/geist";
+
+/* Modo oscuro controlado por data-theme en <html> */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@theme {
+  --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+
+  /* Paleta: blanco y negro puros, con dos grises de apoyo */
+  --color-paper: #ffffff;
+  --color-ink: #000000;
+  --color-graphite: #5c5c5c;
+  --color-ash: #a3a3a3;
+  --color-line: #e4e4e4;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  :root {
+    --bg: var(--color-paper);
+    --fg: var(--color-ink);
+    --muted: var(--color-graphite);
+    --rule: var(--color-line);
+    color-scheme: light;
+  }
+  :root[data-theme="dark"] {
+    --bg: var(--color-ink);
+    --fg: var(--color-paper);
+    --muted: var(--color-ash);
+    --rule: #262626;
+    color-scheme: dark;
+  }
+
+  html {
+    background: var(--bg);
+    color: var(--fg);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply font-sans;
+    font-feature-settings: "ss01";
+  }
+  ::selection {
+    background: var(--fg);
+    color: var(--bg);
+  }
+  :focus-visible {
+    outline: 2px solid var(--fg);
+    outline-offset: 4px;
+  }
+}
+
+/* Lenis (scroll suave) */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Sección invertida: siempre al revés del tema actual */
+.invert-block {
+  --bg: var(--color-ink);
+  --fg: var(--color-paper);
+  --muted: var(--color-ash);
+  --rule: #2a2a2a;
+  background: var(--bg);
+  color: var(--fg);
+}
+:root[data-theme="dark"] .invert-block {
+  --bg: var(--color-paper);
+  --fg: var(--color-ink);
+  --muted: var(--color-graphite);
+  --rule: var(--color-line);
+}
+
+/* Subrayado que crece al pasar el mouse */
+.link-line {
+  background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0 1px;
+  transition: background-size 0.5s var(--ease-out-expo);
+}
+.link-line:hover,
+.link-line:focus-visible {
+  background-size: 100% 1px;
+}
+
+/* Cambio de tema con círculo que se expande (View Transitions) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Antes de que corra JS, el nombre del hero ya se ve; con JS se anima */
+.js [data-split] {
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-split] {
+    visibility: visible;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
