@@ -137,6 +137,13 @@ function initPreview() {
 
   const xTo = gsap.quickTo(box, 'x', { duration: 0.5, ease: 'power3' });
   const yTo = gsap.quickTo(box, 'y', { duration: 0.5, ease: 'power3' });
+  // Se balancea en 3D según la velocidad del mouse
+  gsap.set(box, { transformPerspective: 800 });
+  const rotY = gsap.quickTo(box, 'rotationY', { duration: 0.8, ease: 'power3' });
+  const rotX = gsap.quickTo(box, 'rotationX', { duration: 0.8, ease: 'power3' });
+  let lastX = 0;
+  let lastY = 0;
+  let settle: number | undefined;
 
   document.querySelectorAll<HTMLElement>('[data-preview]').forEach((row) => {
     row.addEventListener('mouseenter', () => {
@@ -147,8 +154,64 @@ function initPreview() {
     row.addEventListener('mousemove', (e) => {
       xTo(e.clientX + 24);
       yTo(e.clientY - 90);
+      const clamp = gsap.utils.clamp(-25, 25);
+      rotY(clamp((e.clientX - lastX) * 1.5));
+      rotX(clamp(-(e.clientY - lastY) * 1.5));
+      lastX = e.clientX;
+      lastY = e.clientY;
+      window.clearTimeout(settle);
+      settle = window.setTimeout(() => {
+        rotY(0);
+        rotX(0);
+      }, 80);
     });
   });
+}
+
+/* ---------- Tarjetas que se inclinan en 3D con el mouse ---------- */
+function initTilt() {
+  if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+  document.querySelectorAll<HTMLElement>('[data-tilt]').forEach((card) => {
+    const max = Number(card.dataset.tilt) || 8;
+    const glare = card.querySelector<HTMLElement>('[data-tilt-glare]');
+    gsap.set(card, { transformPerspective: 1000, transformStyle: 'preserve-3d' });
+    const rx = gsap.quickTo(card, 'rotationX', { duration: 0.6, ease: 'power3' });
+    const ry = gsap.quickTo(card, 'rotationY', { duration: 0.6, ease: 'power3' });
+
+    card.addEventListener('pointermove', (e) => {
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width; // 0 a 1
+      const py = (e.clientY - r.top) / r.height;
+      ry((px - 0.5) * 2 * max);
+      rx((0.5 - py) * 2 * max);
+      if (glare) {
+        glare.style.setProperty('--gx', `${px * 100}%`);
+        glare.style.setProperty('--gy', `${py * 100}%`);
+      }
+    });
+    card.addEventListener('pointerenter', () => glare && gsap.to(glare, { opacity: 1, duration: 0.4 }));
+    card.addEventListener('pointerleave', () => {
+      rx(0);
+      ry(0);
+      if (glare) gsap.to(glare, { opacity: 0, duration: 0.5 });
+    });
+  });
+}
+
+/* ---------- Figura 3D de la portada (Three.js se carga aparte, sin frenar la página) ---------- */
+function initHero3D() {
+  const canvas = document.getElementById('hero-3d') as HTMLCanvasElement | null;
+  if (!canvas) return;
+  const still = reduceMotion();
+  const load = () =>
+    import('./hero3d').then(({ mountHero3D }) => {
+      mountHero3D(canvas, still);
+      if (still) canvas.style.opacity = '1';
+      else gsap.to(canvas, { opacity: 1, scale: 1, duration: 1.6, ease: 'expo.out', delay: 0.3 });
+    });
+  if ('requestIdleCallback' in window) requestIdleCallback(load, { timeout: 1500 });
+  else setTimeout(load, 300);
 }
 
 /* ---------- El menú se esconde al bajar y vuelve al subir ---------- */
@@ -284,9 +347,11 @@ export function initSite() {
   initTheme();
   initHeader();
   initCopyEmail();
+  initHero3D(); // con movimiento reducido se dibuja quieta
   if (reduceMotion()) return; // sin animaciones: todo queda visible y estático
   initLenis();
   initHero();
   initReveal();
   initPreview();
+  initTilt();
 }

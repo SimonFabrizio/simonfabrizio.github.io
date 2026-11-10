@@ -100,7 +100,13 @@ const skills = [
 
   <main id="contenido">
     <!-- Hero -->
-    <section id="inicio" class="mx-auto flex min-h-svh max-w-[1400px] flex-col justify-end px-5 pb-10 pt-28 sm:px-8 sm:pb-14">
+    <section id="inicio" class="relative isolate mx-auto flex min-h-svh max-w-[1400px] flex-col justify-end px-5 pb-10 pt-28 sm:px-8 sm:pb-14">
+      <!-- Figura 3D (decorativa): se carga después del contenido -->
+      <canvas
+        id="hero-3d"
+        aria-hidden="true"
+        class="pointer-events-none absolute right-0 top-16 -z-10 aspect-square w-[78vw] max-w-[620px] scale-90 opacity-0 sm:right-4 sm:top-12 sm:w-[52vw] lg:right-10 lg:w-[44vw]"
+      ></canvas>
       <h1
         class="font-display font-bold leading-[0.82] tracking-[-0.055em] [font-stretch:75%] text-[31vw] sm:text-[clamp(4.5rem,21vw,19rem)]"
         data-split
@@ -148,7 +154,8 @@ const skills = [
           href="https://lagaleriadelasplantas.netlify.app/"
           target="_blank"
           rel="noopener"
-          class="group relative block overflow-hidden rounded-[clamp(12px,2vw,28px)]"
+          class="group relative block overflow-hidden rounded-[clamp(12px,2vw,28px)] will-change-transform"
+          data-tilt="4"
           aria-label="Abrir La Galería de las Plantas en una pestaña nueva"
         >
           <img
@@ -161,6 +168,11 @@ const skills = [
             loading="lazy"
             decoding="async"
           />
+          <span
+            data-tilt-glare
+            aria-hidden="true"
+            class="pointer-events-none absolute inset-0 opacity-0 [background:radial-gradient(circle_at_var(--gx,50%)_var(--gy,50%),rgb(255_255_255/0.22),transparent_45%)]"
+          ></span>
           <span class="absolute bottom-4 right-4 inline-flex items-center gap-2 rounded-full bg-[var(--bg)] px-4 py-2 text-sm font-medium text-[var(--fg)] transition-transform duration-500 group-hover:-translate-y-1 sm:bottom-6 sm:right-6">
             Ver sitio en vivo
             <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9 9 3M4 3h5v5" fill="none" stroke="currentColor" stroke-width="1.5"></path></svg>
@@ -226,7 +238,7 @@ const skills = [
       <ol class="mt-10 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
         {
           process.map((step, i) => (
-            <li class="border-t border-[var(--fg)] pt-5">
+            <li class="border-t border-[var(--fg)] pt-5" data-tilt="10">
               <span class="font-display text-5xl font-bold tracking-[-0.04em] [font-stretch:75%]" aria-hidden="true">{i + 1}</span>
               <h3 class="mt-4 font-display text-xl font-semibold">{step.title}</h3>
               <p class="mt-2 text-[var(--muted)]">{step.text}</p>
